@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Island Tours - VR Island Experience</title>
+    <link rel="icon" type="image/x-icon" href="Assets/VR-Island-Experience sized.png">
+    <style>
+        :root {
+            --deep-blue: #0a0e29;
+            --violet: #4a1e6a;
+            --magenta: #b52b65;
+            --electric-blue: #2d9cdb;
+            --light-accent: #8a4fff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--deep-blue), var(--violet));
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+        
+        header {
+            background: linear-gradient(
+                270deg,
+                #0a0e29,
+                #4a1e6a,
+                #b52b65,
+                #2d9cdb,
+                #8a4fff,
+                #0a0e29,
+                #b52b65
+            );
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(138, 79, 255, 0.3);
+            top: 0;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-container img {
+            height: 50px;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            background: linear-gradient(to right, var(--electric-blue), var(--light-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        nav ul li a:hover {
+            color: var(--electric-blue);
+        }
+        
+        nav ul li a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(to right, var(--magenta), var(--light-accent));
+            transition: width 0.3s;
+        }
+        
+        nav ul li a:hover:after {
+            width: 100%;
+        }
+        
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid rgba(138, 79, 255, 0.3);
+        }
+        
+        .profile-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        /* Main Content Styles */
+        .page-header {
+            text-align: center;
+            padding: 4rem 2rem 2rem;
+        }
+        
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--electric-blue), var(--light-accent), var(--magenta));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Island Grid Layout with Hover Backgrounds */
+        .islands-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            gap: 2rem;
+        }
+        
+        .island-card {
+            background: rgba(74, 30, 106, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 1px solid rgba(138, 79, 255, 0.2);
+            transition: all 0.5s ease;
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: 2rem;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Hover Background Image Effect */
+        .island-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+        
+        /* Individual island background images */
+        .island-card[data-island="barbados"]::before {
+            background-image: url('assets/islands/barbados-bg.jpg');
+        }
+        
+        .island-card[data-island="st-lucia"]::before {
+            background-image: url('assets/islands/st-lucia-bg.jpg');
+        }
+        
+        .island-card[data-island="bahamas"]::before {
+            background-image: url('assets/islands/bahamas-bg.jpg');
+        }
+        
+        .island-card[data-island="jamaica"]::before {
+            background-image: url('assets/islands/jamaica-bg.jpg');
+        }
+        
+        .island-card[data-island="dominica"]::before {
+            background-image: url('assets/islands/dominica-bg.jpg');
+        }
+        
+        .island-card[data-island="grenada"]::before {
+            background-image: url('assets/islands/grenada-bg.jpg');
+        }
+        
+        .island-card:hover::before {
+            opacity: 0.3;
+        }
+        
+        .island-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(138, 79, 255, 0.5);
+        }
+        
+        /* Ensure content stays above background */
+        .island-logo,
+        .island-info,
+        .tour-count,
+        .free-video {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .island-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .island-card:hover .island-logo {
+            transform: scale(1.1);
+        }
+        
+        .island-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .island-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+            transition: color 0.3s ease;
+        }
+        
+        .island-card:hover .island-name {
+            color: var(--electric-blue);
+        }
+        
+        .island-region {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .tour-count {
+            text-align: center;
+            padding: 0.5rem 1rem;
+            background: rgba(45, 156, 219, 0.2);
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .island-card:hover .tour-count {
+            background: rgba(45, 156, 219, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .free-video {
+            width: 120px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            background: rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .island-card:hover .free-video {
+            transform: scale(1.05);
+        }
+        
+        .free-video img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .free-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--electric-blue);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* Rest of your existing modal and responsive styles remain the same */
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, var(--deep-blue), var(--violet));
+            border-radius: 20px;
+            max-width: 1200px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(138, 79, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid rgba(138, 79, 255, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 2rem;
+            background: linear-gradient(to right, var(--electric-blue), var(--light-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .island-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .detail-section h3 {
+            color: var(--electric-blue);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .detail-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .tag {
+            background: rgba(138, 79, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(138, 79, 255, 0.3);
+        }
+        
+        .tour-videos {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .video-item {
+            background: rgba(74, 30, 106, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            border: 1px solid rgba(138, 79, 255, 0.2);
+        }
+        
+        .video-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .video-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .access-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .free-access {
+            background: rgba(45, 156, 219, 0.3);
+            color: var(--electric-blue);
+        }
+        
+        .premium-access {
+            background: rgba(181, 43, 101, 0.3);
+            color: var(--magenta);
+        }
+        
+        .video-preview {
+            width: 100%;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .video-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .video-preview:hover .play-overlay {
+            opacity: 1;
+        }
+        
+        .play-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--deep-blue);
+            font-size: 1.2rem;
+        }
+        
+        .video-info {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+        
+        .video-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .video-link {
+            color: var(--electric-blue);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        
+        .video-link:hover {
+            color: var(--light-accent);
+        }
+        
+        .login-prompt {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(181, 43, 101, 0.2);
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .island-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="assets/VR-Island-Experience sized.png" alt="VR Island Experience Logo">
+            <a href="index.html" class="logo-text">VR Island Experience</a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="island-tours.html" style="color: var(--electric-blue);">Island Tours</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="creation-booking.html">Creation/Booking</a></li>
+                <li>
+                    <div class="profile-icon" onclick="openLoginModal()">
+                        <i class="fas fa-user">👤</i>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h1>Explore Island Paradises</h1>
+            <p>Discover breathtaking virtual tours of the world's most beautiful islands. Each destination offers one free preview tour with many more available for subscribers.</p>
+        </section>
+
+        <section class="islands-grid">
+            <!-- Island Card 1 -->
+            <div class="island-card" data-island="barbados" onclick="openIslandModal('barbados')">
+                <img src="assets/islands/barbados-logo.png" alt="Barbados" class="island-logo">
+                <div class="island-info">
+                    <h3 class="island-name">Barbados</h3>
+                    <p class="island-region">Caribbean</p>
+                </div>
+                <div class="tour-count">8 Tours</div>
+                <div class="free-video">
+                    <img src="assets/videos/barbados-preview.jpg" alt="Barbados Preview">
+                    <div class="free-badge">FREE</div>
+                </div>
+            </div>
+
+            <!-- Island Card 2 -->
+            <div class="island-card" data-island="st-lucia" onclick="openIslandModal('st-lucia')">
+                <img src="assets/islands/st-lucia-logo.png" alt="St. Lucia" class="island-logo">
+                <div class="island-info">
+                    <h3 class="island-name">St. Lucia</h3>
+                    <p class="island-region">Caribbean</p>
+                </div>
+                <div class="tour-count">6 Tours</div>
+                <div class="free-video">
+                    <img src="assets/videos/st-lucia-preview.jpg" alt="St. Lucia Preview">
+                    <div class="free-badge">FREE</div>
+                </div>
+            </div>
+
+            <!-- Island Card 3 -->
+            <div class="island-card" data-island="bahamas" onclick="openIslandModal('bahamas')">
+                <img src="assets/islands/bahamas-logo.png" alt="Bahamas" class="island-logo">
+                <div class="island-info">
+                    <h3 class="island-name">Bahamas</h3>
+                    <p class="island-region">Caribbean</p>
+                </div>
+                <div class="tour-count">12 Tours</div>
+                <div class="free-video">
+                    <img src="assets/videos/bahamas-preview.jpg" alt="Bahamas Preview">
+                    <div class="free-badge">FREE</div>
+                </div>
+            </div>
+
+            <!-- Additional Island Cards -->
+            <div class="island-card" data-island="jamaica" onclick="openIslandModal('jamaica')">
+                <img src="assets/islands/jamaica-logo.png" alt="Jamaica" class="island-logo">
+                <div class="island-info">
+                    <h3 class="island-name">Jamaica</h3>
+                    <p class="island-region">Caribbean</p>
+                </div>
+                <div class="tour-count">9 Tours</div>
+                <div class="free-video">
+                    <img src="assets/videos/jamaica-preview.jpg" alt="Jamaica Preview">
+                    <div class="free-badge">FREE</div>
+                </div>
+            </div>
+
+            <div class="island-card" data-island="dominica" onclick="openIslandModal('dominica')">
+                <img src="assets/islands/dominica-logo.png" alt="Dominica" class="island-logo">
+                <div class="island-info">
+                    <h3 class="island-name">Dominica</h3>
+                    <p class="island-region">Caribbean</p>
+                </div>
+                <div class="tour-count">5 Tours</div>
+                <div class="free-video">
+                    <img src="assets/videos/dominica-preview.jpg" alt="Dominica Preview">
+                    <div class="free-badge">FREE</div>
+                </div>
+            </div>
+
+            <div class="island-card" data-island="grenada" onclick="openIslandModal('grenada')">
+                <img src="assets/islands/grenada-logo.png" alt="Grenada" class="island-logo">
+                <div class="island-info">
+                    <h3 class="island-name">Grenada</h3>
+                    <p class="island-region">Caribbean</p>
+                </div>
+                <div class="tour-count">7 Tours</div>
+                <div class="free-video">
+                    <img src="assets/videos/grenada-preview.jpg" alt="Grenada Preview">
+                    <div class="free-badge">FREE</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Island Modal (same as before) -->
+    <div id="islandModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalIslandName">Island Name</h2>
+                <button class="close-modal" onclick="closeIslandModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="island-details">
+                    <div class="detail-section">
+                        <h3>Experience & Nature</h3>
+                        <div class="detail-tags">
+                            <span class="tag">Pristine Beaches</span>
+                            <span class="tag">Coral Reefs</span>
+                            <span class="tag">Tropical Forests</span>
+                            <span class="tag">Waterfalls</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Historical Sites</h3>
+                        <div class="detail-tags">
+                            <span class="tag">Colonial Architecture</span>
+                            <span class="tag">Ancient Ruins</span>
+                            <span class="tag">Museums</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Food Experience</h3>
+                        <div class="detail-tags">
+                            <span class="tag">Local Cuisine</span>
+                            <span class="tag">Seafood</span>
+                            <span class="tag">Street Food</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Culture</h3>
+                        <div class="detail-tags">
+                            <span class="tag">Traditional Music</span>
+                            <span class="tag">Local Art</span>
+                            <span class="tag">Festivals</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Events</h3>
+                        <div class="detail-tags">
+                            <span class="tag">Carnival</span>
+                            <span class="tag">Music Festivals</span>
+                            <span class="tag">Cultural Events</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h3>Shopping</h3>
+                        <div class="detail-tags">
+                            <span class="tag">Souvenir Stores</span>
+                            <span class="tag">Gem Collectors</span>
+                            <span class="tag">Local Crafts</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tour-videos">
+                    <!-- Free Video -->
+                    <div class="video-item">
+                        <div class="video-header">
+                            <h4 class="video-title">Island Introduction Tour</h4>
+                            <span class="access-badge free-access">FREE</span>
+                        </div>
+                        <div class="video-preview">
+                            <img src="assets/videos/free-preview.jpg" alt="Free Tour Preview">
+                            <div class="play-overlay">
+                                <div class="play-icon">▶</div>
+                            </div>
+                        </div>
+                        <p class="video-info">Explore the main highlights and must-see locations of this beautiful island.</p>
+                        <div class="video-links">
+                            <a href="#" class="video-link">Watch Now</a>
+                            <a href="#" class="video-link">Share</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Premium Video 1 -->
+                    <div class="video-item">
+                        <div class="video-header">
+                            <h4 class="video-title">Hidden Beaches & Coves</h4>
+                            <span class="access-badge premium-access">PREMIUM</span>
+                        </div>
+                        <div class="video-preview">
+                            <img src="assets/videos/premium-1.jpg" alt="Premium Tour 1">
+                            <div class="play-overlay">
+                                <div class="play-icon">▶</div>
+                            </div>
+                        </div>
+                        <p class="video-info">Discover secluded beaches and hidden coves only known to locals.</p>
+                        <div class="video-links">
+                            <a href="#" class="video-link" onclick="requireLogin()">Subscribe to Watch</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Premium Video 2 -->
+                    <div class="video-item">
+                        <div class="video-header">
+                            <h4 class="video-title">360° Cultural Experience</h4>
+                            <span class="access-badge premium-access">PREMIUM</span>
+                        </div>
+                        <div class="video-preview">
+                            <img src="assets/videos/premium-2.jpg" alt="Premium Tour 2">
+                            <div class="play-overlay">
+                                <div class="play-icon">▶</div>
+                            </div>
+                        </div>
+                        <p class="video-info">Immerse yourself in the local culture, traditions, and daily life.</p>
+                        <div class="video-links">
+                            <a href="#" class="video-link" onclick="requireLogin()">Subscribe to Watch</a>
+                        </div>
+                    </div>
+                    
+                    <!-- 360 Tour -->
+                    <div class="video-item">
+                        <div class="video-header">
+                            <h4 class="video-title">360° Island Walkthrough</h4>
+                            <span class="access-badge premium-access">PREMIUM</span>
+                        </div>
+                        <div class="video-preview">
+                            <img src="assets/videos/360-tour.jpg" alt="360 Tour">
+                            <div class="play-overlay">
+                                <div class="play-icon">▶</div>
+                            </div>
+                        </div>
+                        <p class="video-info">Full immersive 360° walking tour of the island's most popular areas.</p>
+                        <div class="video-links">
+                            <a href="#" class="video-link" onclick="requireLogin()">Subscribe to Watch</a>
+                            <a href="#" class="video-link">Tour Bio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal functionality
+        function openIslandModal(islandName) {
+            const modal = document.getElementById('islandModal');
+            const modalTitle = document.getElementById('modalIslandName');
+            
+            // Set modal title based on island
+            modalTitle.textContent = getIslandFullName(islandName);
+            
+            // Show modal
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeIslandModal() {
+            const modal = document.getElementById('islandModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        function getIslandFullName(islandCode) {
+            const islands = {
+                'barbados': 'Barbados',
+                'st-lucia': 'St. Lucia',
+                'bahamas': 'Bahamas',
+                'jamaica': 'Jamaica',
+                'dominica': 'Dominica',
+                'grenada': 'Grenada'
+            };
+            return islands[islandCode] || 'Island';
+        }
+        
+        function openLoginModal() {
+            alert('Login modal would open here. This will be implemented in the backend phase.');
+            // This will open the login/registration modal
+        }
+        
+        function requireLogin() {
+            alert('Please login or subscribe to access premium content.');
+            openLoginModal();
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('islandModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeIslandModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeIslandModal();
+            }
+        });
+    </script>
+</body>
+</html>
