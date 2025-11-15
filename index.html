@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VR Island Experience - Immersive Virtual Reality</title>
+    <link rel="icon" type="image/x-icon" href="Assets/VR-Island-Experience sized.png">
     <style>
         :root {
             --deep-blue: #0a0e29;
@@ -28,7 +29,19 @@
         }
         
         header {
-            background: rgba(10, 14, 41, 0.85);
+            background: linear-gradient(
+                270deg,
+                #0a0e29,
+                #4a1e6a,
+                #b52b65,
+                #2d9cdb,
+                #8a4fff,
+                #0a0e29,
+                #b52b65
+
+            );
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             backdrop-filter: blur(10px);
             padding: 1rem 2rem;
             display: flex;
@@ -38,6 +51,18 @@
             width: 100%;
             z-index: 1000;
             border-bottom: 1px solid rgba(138, 79, 255, 0.3);
+        }
+        
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
         
         .logo-container {
@@ -92,7 +117,93 @@
             background: linear-gradient(to right, var(--magenta), var(--light-accent));
             transition: width 0.3s;
         }
+
+        .particle-system {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--electric-blue);
+            border-radius: 50%;
+            animation: particleFloat 20s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
         
+        .hero-interactive {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 4;
+        }
+
+        .scroll-indicator {
+            width: 30px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 25px;
+            position: relative;
+        }
+
+        .scroll-indicator::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 12px;
+            background: var(--electric-blue);
+            border-radius: 2px;
+            animation: scrollBounce 2s infinite;
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        .vr-badge {
+            background: linear-gradient(45deg, var(--magenta), var(--light-accent));
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
         nav ul li a:hover:after {
             width: 100%;
         }
@@ -142,6 +253,41 @@
             background-clip: text;
             color: transparent;
             text-shadow: 0 0 20px rgba(45, 156, 219, 0.3);
+            position: relative;
+        }
+
+        .video-content h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--electric-blue), transparent);
+            animation: textShine 3s infinite;
+        }
+
+        @keyframes textShine {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid var(--electric-blue);
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--electric-blue) }
         }
         
         .video-content p {
@@ -150,6 +296,35 @@
             opacity: 0.9;
         }
         
+        .video-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 4;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
         .play-button {
             display: inline-block;
             background: linear-gradient(45deg, var(--magenta), var(--light-accent));
@@ -160,6 +335,28 @@
             font-weight: bold;
             transition: transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 5px 15px rgba(181, 43, 101, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .play-button:hover::before {
+            left: 100%;
+        }
+
+        .play-button span {
+            position: relative;
+            z-index: 2;
         }
         
         .play-button:hover {
@@ -225,6 +422,9 @@
             transition: transform 0.3s, box-shadow 0.3s;
             position: relative;
             overflow: hidden;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+
         }
         
         .column:before {
@@ -238,10 +438,29 @@
         }
         
         .column:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            transform: translateY(-10px) rotateX('5deg');
+            box-shadow:
+                 0 25px 50px rgba(181, 43, 101, 0.3),
+                 0 0 100px rgba(45, 156, 219, 0.1);
         }
         
+        .column::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(138, 79, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 15px;
+        }
+
+        .column:hover::after {
+            opacity: 1;
+        }
+
         .column h3 {
             color: white;
             margin-bottom: 1.5rem;
@@ -382,7 +601,7 @@
         }
         
         .partner-item:nth-child(5) {
-            top: 20%;
+            top: 30%;
             left: 50%;
             animation-delay: 8s;
             animation-duration: 26s;
@@ -458,6 +677,50 @@
             top: 60%;
             left: 10%;
         }
+        /* Enhanced Background Elements */
+        .background-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-island {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(138, 79, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: islandFloat 20s infinite ease-in-out;
+        }
+
+        .floating-island:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-island:nth-child(2) {
+            top: 60%;
+            left: 80%;
+            animation-delay: 5s;
+        }
+
+        .floating-island:nth-child(3) {
+            top: 40%;
+            left: 70%;
+            animation-delay: 10s;
+        }
+
+        @keyframes islandFloat {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(50px, 30px) rotate(90deg); }
+            50% { transform: translate(100px, 10px) rotate(180deg); }
+            75% { transform: translate(30px, 50px) rotate(270deg); }
+        }
         
         @media (max-width: 768px) {
             .columns {
@@ -502,12 +765,26 @@
                 padding: 8rem 2rem;
             }
         }
+
+        /* Performance Optimizations */
+        .column, .play-button, .partner-item {
+            will-change: transform;
+        }
+
+        /* Reduce animation intensity for users who prefer reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="logo-container">
-            <img src="Assets/VR-Island-Experience sized.png" alt="VR Island Experience Logo">
+            <img src="assets/VR-Island-Experience sized.png" alt="VR Island Experience Logo">
             <a href="Index.html" class="logo-text">VR Island Experience</a>
         </div>
         <nav>
@@ -526,8 +803,13 @@
                 <div class="floating-element"></div>
                 <div class="floating-element"></div>
             </div>
+            <div class="background-elements">
+                <div class="floating-island"></div>
+                <div class="floating-island"></div>
+                <div class="floating-island"></div>
+            </div>
             <video class="video-background" autoplay muted loop playsinline>
-                <source src="Assets/VR Island preview .mp4" type="video/mp4">
+                <source src="assets/VR Island preview .mp4" type="video/mp4">
                 <!-- Fallback image if video doesn't load -->
                 <img src="assets/images/island-background.jpg" alt="Island Background" style="width: 100%; height: 100%; object-fit: cover;">
             </video>
@@ -535,7 +817,7 @@
             <div class="video-content">
                 <h1>Immerse Yourself in Paradise</h1>
                 <p>Experience the world's most beautiful islands through cutting-edge virtual reality technology. Explore crystal-clear waters, white sandy beaches, and tropical landscapes like never before.</p>
-                <a href="#" class="play-button">Begin Your Journey</a>
+                <a href="island-tours.html" class="play-button"><span>Begin Your Journey</span></a>
             </div>
         </section>
         
@@ -630,5 +912,4 @@
         </div>
     </footer>
 </body>
-
 </html>
