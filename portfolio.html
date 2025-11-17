@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - VR Island Experience</title>
+    <link rel="icon" type="image/x-icon" href="Assets/VR-Island-Experience sized.png">
+    <style>
+        :root {
+            --deep-blue: #0a0e29;
+            --violet: #4a1e6a;
+            --magenta: #b52b65;
+            --electric-blue: #2d9cdb;
+            --light-accent: #8a4fff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--deep-blue), var(--violet));
+            color: white;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: linear-gradient(
+                270deg,
+                #0a0e29,
+                #4a1e6a,
+                #b52b65,
+                #2d9cdb,
+                #8a4fff,
+                #0a0e29,
+                #b52b65
+            );
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(138, 79, 255, 0.3);
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-container img {
+            height: 50px;
+        }
+        
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            background: linear-gradient(to right, var(--electric-blue), var(--light-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        nav ul li a:hover {
+            color: var(--electric-blue);
+        }
+        
+        nav ul li a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: linear-gradient(to right, var(--magenta), var(--light-accent));
+            transition: width 0.3s;
+        }
+
+        nav ul li a:hover:after {
+            width: 100%;
+        }
+
+        /* Portfolio Hero */
+        .portfolio-hero {
+            padding: 120px 2rem 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(10, 14, 41, 0.9), rgba(74, 30, 106, 0.8));
+        }
+
+        .portfolio-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--electric-blue), var(--light-accent), var(--magenta));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .portfolio-hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        /* Portfolio Grid */
+        .portfolio-section {
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--electric-blue), var(--light-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .portfolio-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(74, 30, 106, 0.3);
+            border: 1px solid rgba(138, 79, 255, 0.3);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(45deg, var(--magenta), var(--light-accent));
+            transform: translateY(-2px);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Portfolio Item */
+        .portfolio-item {
+            background: rgba(74, 30, 106, 0.3);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(138, 79, 255, 0.2);
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(181, 43, 101, 0.3);
+        }
+
+        .media-container {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(45deg, var(--violet), var(--magenta));
+        }
+
+        .media-container img,
+        .media-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .portfolio-item:hover .media-container img,
+        .portfolio-item:hover .media-container video {
+            transform: scale(1.1);
+        }
+
+        /* Video Play Button - Only shows on hover */
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .portfolio-item:hover .play-button {
+            opacity: 1;
+        }
+
+        .play-button::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 15px solid var(--deep-blue);
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            margin-left: 3px;
+        }
+
+        .play-button:hover {
+            background: white;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        /* View Project Button - Only for images */
+        .view-project {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: var(--deep-blue);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            opacity: 0;
+            z-index: 2;
+        }
+
+        .portfolio-item:hover .view-project {
+            opacity: 1;
+        }
+
+        .view-project:hover {
+            background: var(--electric-blue);
+            color: white;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .portfolio-content {
+            padding: 1.5rem;
+        }
+
+        .media-type-badge {
+            display: inline-block;
+            background: var(--electric-blue);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            margin-right: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .portfolio-category {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--magenta), var(--light-accent));
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .portfolio-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .portfolio-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Gallery Popup Modal */
+        .gallery-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 41, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+
+        .gallery-modal.active {
+            display: flex;
+        }
+
+        .gallery-content {
+            background: rgba(74, 30, 106, 0.9);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 90vw;
+            max-height: 90vh;
+            width: 1000px;
+            position: relative;
+            border: 1px solid rgba(138, 79, 255, 0.3);
+            backdrop-filter: blur(20px);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .main-media {
+            width: 100%;
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background: var(--deep-blue);
+        }
+
+        .main-media video,
+        .main-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-carousel {
+            position: relative;
+            padding: 0 50px;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 1rem;
+            transition: transform 0.5s ease;
+            overflow-x: visible;
+        }
+
+        .carousel-item {
+            flex: 0 0 150px;
+            height: 100px;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0.6;
+            border: 2px solid transparent;
+        }
+
+        .carousel-item.active {
+            opacity: 1;
+            border-color: var(--electric-blue);
+            transform: scale(1.1);
+        }
+
+        .carousel-item img,
+        .carousel-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            z-index: 5;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-prev {
+            left: 0;
+        }
+
+        .carousel-next {
+            right: 0;
+        }
+
+        .gallery-info {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .gallery-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--electric-blue), var(--light-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .gallery-description {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Stats Section */
+        .portfolio-stats {
+            background: rgba(10, 14, 41, 0.7);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            background: rgba(74, 30, 106, 0.3);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(138, 79, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--electric-blue), var(--light-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        /* CTA Section */
+        .portfolio-cta {
+            padding: 6rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(74, 30, 106, 0.8), rgba(10, 14, 41, 0.9));
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--electric-blue), var(--light-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .cta-content p {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, var(--magenta), var(--light-accent));
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(181, 43, 101, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(181, 43, 101, 0.6);
+        }
+
+        footer {
+            background: rgba(10, 14, 41, 0.9);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(138, 79, 255, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .portfolio-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .portfolio-filters {
+                gap: 0.5rem;
+            }
+            
+            .filter-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .gallery-content {
+                padding: 1rem;
+                margin: 1rem;
+            }
+            
+            .main-media {
+                height: 300px;
+            }
+            
+            .carousel-item {
+                flex: 0 0 100px;
+                height: 70px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="Assets/VR-Island-Experience sized.png" alt="VR Island Experience Logo">
+            <a href="index.html" class="logo-text">VR Island Experience</a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="island-tours.html">Island Tours</a></li>
+                <li><a href="portfolio.html" style="color: var(--electric-blue);">Portfolio</a></li>
+                <li><a href="creation-booking.html">Creation/Booking</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Portfolio Hero -->
+        <section class="portfolio-hero">
+            <h1>Our VR Island Portfolio</h1>
+            <p>Explore our stunning virtual reality island experiences through videos and images</p>
+        </section>
+
+        <!-- Portfolio Grid -->
+        <section class="portfolio-section">
+            <h2 class="section-title">Featured Projects</h2>
+            
+            <!-- Filter Buttons -->
+            <div class="portfolio-filters">
+                <button class="filter-btn active" data-filter="all">All Projects</button>
+                <button class="filter-btn" data-filter="tropical">Tropical Islands</button>
+                <button class="filter-btn" data-filter="luxury">Luxury Resorts</button>
+                <button class="filter-btn" data-filter="adventure">Adventure Tours</button>
+                <button class="filter-btn" data-filter="custom">Custom Experiences</button>
+            </div>
+
+            <!-- Portfolio Grid - Mixed Media -->
+            <div class="portfolio-grid">
+                <!-- Video Item 1 -->
+                <div class="portfolio-item" data-category="tropical" data-gallery="tropical-gallery">
+                    <div class="media-container">
+                        <video class="video-player" poster="assets/portfolio/video-thumbnails/tropical-preview.jpg">
+                            <source src="assets/portfolio/videos/tropical-paradise-vr.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-button"></div>
+                    </div>
+                    <div class="portfolio-content">
+                        <span class="media-type-badge">Video</span>
+                        <span class="portfolio-category">Tropical Islands</span>
+                        <h3 class="portfolio-title">Tropical Paradise VR Experience</h3>
+                        <p class="portfolio-description">Full 360° VR tour of our most popular tropical island destination.</p>
+                    </div>
+                </div>
+
+                <!-- Image Item 1 -->
+                <div class="portfolio-item" data-category="luxury" data-gallery="luxury-gallery">
+                    <div class="media-container">
+                        <img src="assets/portfolio/images/luxury-resort-panorama.jpg" alt="Luxury Resort Panorama">
+                        <div class="view-project">View Gallery</div>
+                    </div>
+                    <div class="portfolio-content">
+                        <span class="media-type-badge">Image</span>
+                        <span class="portfolio-category">Luxury Resorts</span>
+                        <h3 class="portfolio-title">Premium Resort Overview</h3>
+                        <p class="portfolio-description">Stunning panoramic views of our luxury resort locations.</p>
+                    </div>
+                </div>
+
+                <!-- Video Item 2 -->
+                <div class="portfolio-item" data-category="adventure" data-gallery="adventure-gallery">
+                    <div class="media-container">
+                        <video class="video-player" poster="assets/portfolio/video-thumbnails/adventure-preview.jpg">
+                            <source src="assets/portfolio/videos/island-adventure-quest.mp4" type="video/mp4">
+                        </video>
+                        <div class="play-button"></div>
+                    </div>
+                    <div class="portfolio-content">
+                        <span class="media-type-badge">Video</span>
+                        <span class="portfolio-category">Adventure Tours</span>
+                        <h3 class="portfolio-title">Island Adventure Quest</h3>
+                        <p class="portfolio-description">Action-packed VR adventure through hidden caves and waterfalls.</p>
+                    </div>
+                </div>
+
+                <!-- More items would follow the same pattern -->
+            </div>
+        </section>
+
+        <!-- Gallery Modal -->
+        <div class="gallery-modal">
+            <div class="gallery-content">
+                <button class="close-modal">&times;</button>
+                <div class="main-media">
+                    <!-- Main video or image will be inserted here -->
+                </div>
+                <div class="gallery-carousel">
+                    <button class="carousel-btn carousel-prev">❮</button>
+                    <div class="carousel-track">
+                        <!-- Carousel items will be inserted here -->
+                    </div>
+                    <button class="carousel-btn carousel-next">❯</button>
+                </div>
+                <div class="gallery-info">
+                    <h3 class="gallery-title">Project Title</h3>
+                    <p class="gallery-description">Project description will appear here</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <section class="portfolio-stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">75+</div>
+                    <div class="stat-label">VR Experiences</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">200+</div>
+                    <div class="stat-label">Videos Created</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">360° Images</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Client Satisfaction</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="portfolio-cta">
+            <div class="cta-content">
+                <h2>Ready to Create Your VR Experience?</h2>
+                <p>Let us transport your clients to paradise with our cutting-edge virtual reality island experiences.</p>
+                <a href="creation-booking.html" class="cta-button">Start Your Project</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="copyright">
+            © 2025 VR Island Experience. All Rights Reserved.<br>
+            This site was created and managed through ScorpMotifs Graphic Designs
+        </div>
+    </footer>
+
+    <script>
+        // Gallery Data - This would come from CMS in real implementation
+        const galleryData = {
+            'tropical-gallery': {
+                title: 'Tropical Paradise VR Experience',
+                description: 'Full 360° VR tour of our most popular tropical island destination with crystal-clear waters and pristine beaches.',
+                media: [
+                    { type: 'video', src: 'assets/portfolio/videos/tropical-paradise-vr.mp4', thumbnail: 'assets/portfolio/video-thumbnails/tropical-preview.jpg' },
+                    { type: 'image', src: 'assets/portfolio/images/tropical-beach-1.jpg', thumbnail: 'assets/portfolio/images/tropical-beach-1.jpg' },
+                    { type: 'image', src: 'assets/portfolio/images/tropical-beach-2.jpg', thumbnail: 'assets/portfolio/images/tropical-beach-2.jpg' },
+                    { type: 'image', src: 'assets/portfolio/images/tropical-beach-3.jpg', thumbnail: 'assets/portfolio/images/tropical-beach-3.jpg' },
+                    { type: 'video', src: 'assets/portfolio/videos/tropical-sunset.mp4', thumbnail: 'assets/portfolio/video-thumbnails/tropical-sunset.jpg' }
+                ]
+            },
+            'luxury-gallery': {
+                title: 'Premium Resort Overview',
+                description: 'Stunning panoramic views and virtual tours of our luxury resort locations with premium amenities.',
+                media: [
+                    { type: 'image', src: 'assets/portfolio/images/luxury-resort-panorama.jpg', thumbnail: 'assets/portfolio/images/luxury-resort-panorama.jpg' },
+                    { type: 'image', src: 'assets/portfolio/images/luxury-pool.jpg', thumbnail: 'assets/portfolio/images/luxury-pool.jpg' },
+                    { type: 'image', src: 'assets/portfolio/images/luxury-suite.jpg', thumbnail: 'assets/portfolio/images/luxury-suite.jpg' },
+                    { type: 'video', src: 'assets/portfolio/videos/luxury-resort-tour.mp4', thumbnail: 'assets/portfolio/video-thumbnails/luxury-resort.jpg' },
+                    { type: 'image', src: 'assets/portfolio/images/luxury-spa.jpg', thumbnail: 'assets/portfolio/images/luxury-spa.jpg' }
+                ]
+            },
+            'adventure-gallery': {
+                title: 'Island Adventure Quest',
+                description: 'Action-packed VR adventure through hidden caves, waterfalls, and tropical jungles.',
+                media: [
+                    { type: 'video', src: 'assets/portfolio/videos/island-adventure-quest.mp4', thumbnail: 'assets/portfolio/video-thumbnails/adventure-preview.jpg' },
+                    { type: 'image', src: 'assets/portfolio/images/adventure-cave.jpg', thumbnail: 'assets/portfolio/images/adventure-cave.jpg' },
+                    { type: 'image', src: 'assets/portfolio/images/adventure-waterfall.jpg', thumbnail: 'assets/portfolio/images/adventure-waterfall.jpg' },
+                    { type: 'video', src: 'assets/portfolio/videos/jungle-exploration.mp4', thumbnail: 'assets/portfolio/video-thumbnails/jungle-preview.jpg' },
+                    { type: 'image', src: 'assets/portfolio/images/adventure-cliff.jpg', thumbnail: 'assets/portfolio/images/adventure-cliff.jpg' }
+                ]
+            }
+        };
+
+        // Portfolio Filtering
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const portfolioItems = document.querySelectorAll('.portfolio-item');
+            const galleryModal = document.querySelector('.gallery-modal');
+            const closeModal = document.querySelector('.close-modal');
+            const mainMedia = document.querySelector('.main-media');
+            const carouselTrack = document.querySelector('.carousel-track');
+            const carouselPrev = document.querySelector('.carousel-prev');
+            const carouselNext = document.querySelector('.carousel-next');
+            const galleryTitle = document.querySelector('.gallery-title');
+            const galleryDescription = document.querySelector('.gallery-description');
+
+            let currentGallery = null;
+            let currentIndex = 0;
+
+            // Filtering functionality
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filterValue = this.getAttribute('data-filter');
+                    
+                    portfolioItems.forEach(item => {
+                        const categories = item.getAttribute('data-category').split(' ');
+                        
+                        if (filterValue === 'all' || categories.includes(filterValue)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Open gallery modal
+            portfolioItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const galleryId = this.getAttribute('data-gallery');
+                    openGallery(galleryId);
+                });
+            });
+
+            // Close modal
+            closeModal.addEventListener('click', closeGallery);
+            galleryModal.addEventListener('click', function(e) {
+                if (e.target === galleryModal) {
+                    closeGallery();
+                }
+            });
+
+            // Carousel navigation
+            carouselPrev.addEventListener('click', () => navigateCarousel(-1));
+            carouselNext.addEventListener('click', () => navigateCarousel(1));
+
+            function openGallery(galleryId) {
+                currentGallery = galleryData[galleryId];
+                if (!currentGallery) return;
+
+                currentIndex = 0;
+                galleryTitle.textContent = currentGallery.title;
+                galleryDescription.textContent = currentGallery.description;
+                
+                updateMainMedia();
+                updateCarousel();
+                galleryModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeGallery() {
+                galleryModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                
+                // Pause any playing videos
+                const videos = mainMedia.querySelectorAll('video');
+                videos.forEach(video => {
+                    video.pause();
+                    video.currentTime = 0;
+                });
+            }
+
+            function updateMainMedia() {
+                const media = currentGallery.media[currentIndex];
+                mainMedia.innerHTML = '';
+                
+                if (media.type === 'video') {
+                    const video = document.createElement('video');
+                    video.className = 'video-player';
+                    video.controls = true;
+                    video.autoplay = true;
+                    const source = document.createElement('source');
+                    source.src = media.src;
+                    source.type = 'video/mp4';
+                    video.appendChild(source);
+                    mainMedia.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = media.src;
+                    img.alt = currentGallery.title;
+                    mainMedia.appendChild(img);
+                }
+            }
+
+            function updateCarousel() {
+                carouselTrack.innerHTML = '';
+                currentGallery.media.forEach((media, index) => {
+                    const item = document.createElement('div');
+                    item.className = `carousel-item ${index === currentIndex ? 'active' : ''}`;
+                    item.addEventListener('click', () => selectCarouselItem(index));
+                    
+                    if (media.type === 'video') {
+                        const video = document.createElement('video');
+                        video.src = media.src;
+                        video.poster = media.thumbnail;
+                        item.appendChild(video);
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = media.thumbnail || media.src;
+                        img.alt = `Thumbnail ${index + 1}`;
+                        item.appendChild(img);
+                    }
+                    
+                    carouselTrack.appendChild(item);
+                });
+            }
+
+            function selectCarouselItem(index) {
+                currentIndex = index;
+                updateMainMedia();
+                updateCarousel();
+            }
+
+            function navigateCarousel(direction) {
+                const items = carouselTrack.querySelectorAll('.carousel-item');
+                const itemWidth = items[0].offsetWidth + 16; // 16px gap
+                const trackWidth = carouselTrack.offsetWidth;
+                const scrollAmount = itemWidth * direction * 3; // Scroll 3 items at a time
+                
+                carouselTrack.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (!galleryModal.classList.contains('active')) return;
+                
+                if (e.key === 'Escape') closeGallery();
+                if (e.key === 'ArrowLeft') navigateCarousel(-1);
+                if (e.key === 'ArrowRight') navigateCarousel(1);
+            });
+        });
+    </script>
+</body>
+</html>
